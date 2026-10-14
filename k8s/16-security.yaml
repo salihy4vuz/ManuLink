@@ -1,0 +1,14 @@
+---
+# Faz 5.7.8: Security - Trivy Vulnerability Scanner Operator
+# Example configuration for a Trivy vulnerability report schedule
+
+apiVersion: aquasecurity.github.io/v1alpha1
+kind: VulnerabilityReport
+metadata:
+  name: default-scan
+  namespace: default
+  labels:
+    trivy-operator.resource.kind: Namespace
+    trivy-operator.resource.name: default
+# In reality, the Trivy operator auto-generates these based on running pods.
+# To install Trivy Operator: helm repo add aqua https://aquasecurity.github.io/helm-charts/ && helm install trivy-operator aqua/trivy-operator

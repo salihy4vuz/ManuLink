@@ -1,0 +1,19 @@
+---
+# Faz 5.8.6: Edge / Multi-Cluster Deployment (Karmada)
+# Example PropagationPolicy to deploy geometry-engine to Edge clusters on factory floors
+
+apiVersion: policy.karmada.io/v1alpha1
+kind: PropagationPolicy
+metadata:
+  name: edge-geometry-engine
+  namespace: default
+spec:
+  resourceSelectors:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: geometry-engine-deployment
+  placement:
+    clusterAffinity:
+      clusterNames:
+        - factory-edge-cluster-1
+        - factory-edge-cluster-2

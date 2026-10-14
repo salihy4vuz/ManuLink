@@ -1,0 +1,14 @@
+---
+# Faz 5.9.4: KServe (ML/AI Model Serving)
+# Example InferenceService for an AI model that predicts bending sequences
+
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: bending-sequence-predictor
+  namespace: default
+spec:
+  predictor:
+    sklearn:
+      storageUri: "s3://sacmetal-models/bending-sequence-v1"
+    # KServe abstracts the deployment, scaling (to zero), and ingress of the model

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sheet-metal-main-api
+spec:
+  selector:
+    app: sheet-metal-main-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000

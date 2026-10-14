@@ -1,0 +1,104 @@
+# ========================================
+# Dependencies
+# ========================================
+node_modules/
+.pnp
+.pnp.js
+
+# ========================================
+# Environment variables (KRİTİK)
+# ========================================
+# Tüm .env dosyalarını yok say
+.env
+.env.*
+# Ama .env.example dosyaları repoda kalsın (her klasörde)
+!.env.example
+!**/.env.example
+
+# ========================================
+# Build outputs
+# ========================================
+dist/
+build/
+*.tsbuildinfo
+target/
+**/target/
+*.rlib
+*.rmeta
+.rustc_info.json
+CACHEDIR.TAG
+
+# ========================================
+# Test coverage
+# ========================================
+coverage
+coverage.out
+*.cover
+*.coverprofile
+
+# ========================================
+# Logs
+# ========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ========================================
+# Python
+# ========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# ========================================
+# IDE / OS
+# ========================================
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+
+# ========================================
+# Database
+# ========================================
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+seed_local.sql
+
+# ========================================
+# Binaries & Tooling
+# ========================================
+rustup-init.exe
+bin/
+*.exe
+
+# ========================================
+# K8s / Helm
+# ========================================
+# Secret dosyalarını yok say (örnek dosyalar hariç)
+k8s/**/*secret*.yaml
+!k8s/**/*secret*.yaml.example
+!k8s/**/*secret*.example.yaml
+
+# ========================================
+# K8s local config
+# ========================================
+kubeconfig
+*.kubeconfig

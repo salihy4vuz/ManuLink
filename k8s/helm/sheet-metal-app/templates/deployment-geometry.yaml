@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sheet-metal-geometry-engine
+  labels:
+    app: sheet-metal-geometry-engine
+spec:
+  replicas: {{ .Values.geometryEngine.replicas }}
+  selector:
+    matchLabels:
+      app: sheet-metal-geometry-engine
+  template:
+    metadata:
+      labels:
+        app: sheet-metal-geometry-engine
+    spec:
+      containers:
+        - name: geometry-engine
+          image: "{{ .Values.global.registry }}/{{ .Values.geometryEngine.image }}:{{ .Values.geometryEngine.tag }}"
+          resources:
+            requests:
+              cpu: {{ .Values.geometryEngine.resources.requests.cpu }}
+              memory: {{ .Values.geometryEngine.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.geometryEngine.resources.limits.cpu }}
+              memory: {{ .Values.geometryEngine.resources.limits.memory }}
+          env:
+            - name: RABBITMQ_HOST
+              value: "{{ .Values.rabbitmq.host }}"
+          envFrom:
+            - secretRef:
+                name: sheet-metal-secret

@@ -1,0 +1,54 @@
+global:
+  registry: "ghcr.io/salihy4vuz"
+  environment: "production"
+
+api:
+  image: "sheet-metal-main-api"
+  tag: "latest"
+  replicas: 2
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      cpu: "1000m"
+      memory: "512Mi"
+  env:
+    PORT: "3000"
+    GIN_MODE: "release"
+
+geometryEngine:
+  image: "sheet-metal-geometry-engine"
+  tag: "latest"
+  replicas: 2
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "2000m"
+      memory: "2Gi"
+
+postgresql:
+  host: "postgresql-svc"
+  port: "5432"
+  database: "sheet_metal_db"
+
+redis:
+  host: "redis-svc"
+  port: "6379"
+
+rabbitmq:
+  host: "rabbitmq-svc"
+  port: "5672"
+
+minio:
+  endpoint: "minio-svc:9000"
+  useTLS: false
+
+ingress:
+  enabled: true
+  className: "nginx"
+  host: "api.yourdomain.com"
+  tls: true
+  certIssuer: "letsencrypt-prod"

@@ -1,0 +1,30 @@
+---
+# Faz 5.6: ArgoCD Installation (GitOps Continuous Delivery)
+# Note: First apply the core manifest: kubectl create namespace argocd && kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+---
+# Example ArgoCD Application pointing to this repository
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sacmetal-automation
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/your-username/sacmetal-automation.git' # Guncellenmeli
+    targetRevision: HEAD
+    path: k8s
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

@@ -1,0 +1,22 @@
+---
+# Faz 5.9.2: KUTTL (KUbernetes Test TooL) Quality Gates
+# Example End-to-End Test Suite for Kuttl to verify main-api is running
+
+apiVersion: kuttl.dev/v1beta1
+kind: TestSuite
+metadata:
+  name: sacmetal-e2e-tests
+spec:
+  testDirs:
+  - ./tests/e2e/k8s/
+  timeout: 60
+  parallel: 1
+---
+# An example test step (usually placed in tests/e2e/k8s/api-test/01-assert.yaml)
+apiVersion: kuttl.dev/v1beta1
+kind: TestAssert
+metadata:
+  name: assert-main-api-running
+timeout: 30
+commands:
+  - command: kubectl get pods -l app=main-api -n default | grep Running

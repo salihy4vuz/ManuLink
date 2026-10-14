@@ -1,0 +1,23 @@
+---
+# Faz 5.9.6: Stateful Application Management (Zalando Postgres Operator)
+# Automates PostgreSQL provisioning, replication, backup, and high-availability
+
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: sacmetal-pg-cluster
+  namespace: default
+spec:
+  teamId: "sacmetal"
+  volume:
+    size: 20Gi
+    storageClass: "longhorn"
+  numberOfInstances: 2 # 1 Master, 1 Replica for High Availability
+  users:
+    sacmetal_user:
+    - superuser
+    - createdb
+  databases:
+    sacmetal_db: sacmetal_user
+  postgresql:
+    version: "16"

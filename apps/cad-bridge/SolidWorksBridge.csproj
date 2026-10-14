@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SheetMetalApex.Bridge</RootNamespace>
+    <AssemblyName>SolidWorksApexBridge</AssemblyName>
+    <!-- Register for COM interop so SolidWorks can find it -->
+    <RegisterForComInterop>true</RegisterForComInterop>
+    <PlatformTarget>x64</PlatformTarget>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="SolidEdge.Framework, Version=10.0.0.0">
+      <HintPath>$(SOLIDEDGE_DIR)\Program\SolidEdge.Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- SolidWorks Interop Assemblies -->
+  <!-- Assuming SW is installed, otherwise NuGet packages like 'SolidWorks.Interop.sldworks' can be used -->
+  <ItemGroup>
+    <PackageReference Include="SolidWorks.Interop.sldworks" Version="29.1.0" />
+    <PackageReference Include="SolidWorks.Interop.swconst" Version="29.1.0" />
+    <PackageReference Include="SolidWorks.Interop.swpublished" Version="29.1.0" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,25 @@
+---
+# Faz 5.9.1: Tekton CI/CD Pipeline
+# A sample Task to build a Docker image using Kaniko inside the cluster.
+
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-rust-engine
+  namespace: default
+spec:
+  workspaces:
+  - name: source
+  params:
+  - name: IMAGE
+    description: Name of the image to build
+    type: string
+  steps:
+  - name: build-and-push
+    image: gcr.io/kaniko-project/executor:latest
+    command:
+    - /kaniko/executor
+    args:
+    - --dockerfile=$(workspaces.source.path)/services/geometry-engine/Dockerfile
+    - --context=$(workspaces.source.path)
+    - --destination=$(params.IMAGE)

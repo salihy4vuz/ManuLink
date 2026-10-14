@@ -1,0 +1,23 @@
+---
+# Faz 5.7.5: Zero-Trust Network Policies (Cilium/Calico compatible)
+# Restrict traffic so the database can only be accessed by the main-api
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: main-api
+    ports:
+    - protocol: TCP
+      port: 5432

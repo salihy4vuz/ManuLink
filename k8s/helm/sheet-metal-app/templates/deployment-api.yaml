@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sheet-metal-main-api
+  labels:
+    app: sheet-metal-main-api
+spec:
+  replicas: {{ .Values.api.replicas }}
+  selector:
+    matchLabels:
+      app: sheet-metal-main-api
+  template:
+    metadata:
+      labels:
+        app: sheet-metal-main-api
+    spec:
+      containers:
+        - name: main-api
+          image: "{{ .Values.global.registry }}/{{ .Values.api.image }}:{{ .Values.api.tag }}"
+          resources:
+            requests:
+              cpu: {{ .Values.api.resources.requests.cpu }}
+              memory: {{ .Values.api.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.api.resources.limits.cpu }}
+              memory: {{ .Values.api.resources.limits.memory }}
+          env:
+            - name: PORT
+              value: "{{ .Values.api.env.PORT }}"
+            - name: GIN_MODE
+              value: "{{ .Values.api.env.GIN_MODE }}"
+            - name: DB_HOST
+              value: "{{ .Values.postgresql.host }}"
+            - name: DB_NAME
+              value: "{{ .Values.postgresql.database }}"
+            - name: REDIS_HOST
+              value: "{{ .Values.redis.host }}:{{ .Values.redis.port }}"
+            - name: RABBITMQ_HOST
+              value: "{{ .Values.rabbitmq.host }}"
+            - name: MINIO_ENDPOINT
+              value: "{{ .Values.minio.endpoint }}"
+          envFrom:
+            - secretRef:
+                name: sheet-metal-secret
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10

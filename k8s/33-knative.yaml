@@ -1,0 +1,20 @@
+---
+# Faz 5.9.7: Serverless / FaaS (Knative Serving)
+# Knative Service for a short-lived script that scales to 0 when not used
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: dxf-repair-script
+  namespace: default
+spec:
+  template:
+    metadata:
+      annotations:
+        # Scale to zero after 60 seconds of inactivity
+        autoscaling.knative.dev/scale-to-zero-pod-retention-period: "60s"
+    spec:
+      containers:
+      - image: your-registry/dxf-repair:latest
+        ports:
+        - containerPort: 8080

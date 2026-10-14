@@ -1,0 +1,29 @@
+---
+# Faz 5.8.4: FinOps & Cost Monitoring (OpenCost)
+# OpenCost deployment to monitor pod resource usage and costs.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opencost
+  namespace: opencost
+  labels:
+    app: opencost
+spec:
+  selector:
+    matchLabels:
+      app: opencost
+  template:
+    metadata:
+      labels:
+        app: opencost
+    spec:
+      containers:
+        - name: opencost
+          image: quay.io/kubecost1/opencost:latest
+          env:
+            - name: PROMETHEUS_SERVER_ENDPOINT
+              value: "http://prometheus-server.default.svc.cluster.local:80"
+          ports:
+            - name: http
+              containerPort: 9003

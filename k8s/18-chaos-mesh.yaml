@@ -1,0 +1,24 @@
+---
+# Faz 5.8.1: Chaos Mesh (Chaos Engineering)
+# Example: Inject a 500ms network delay into the Postgres database randomly to test system resilience
+
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: postgres-network-delay
+  namespace: default
+spec:
+  action: delay
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: postgres
+  delay:
+    latency: "500ms"
+    correlation: "100"
+    jitter: "0ms"
+  duration: "30s"
+  scheduler:
+    cron: "@every 10m"

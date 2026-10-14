@@ -1,0 +1,27 @@
+---
+# Faz 5.7.1: Service Mesh (Linkerd) Annotations for Namespaces
+# Apply with: linkerd install --crds | kubectl apply -f -
+#             linkerd install | kubectl apply -f -
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default
+  labels:
+    # This label tells Linkerd to automatically inject sidecar proxies into all pods in this namespace
+    linkerd.io/inject: enabled
+
+---
+# Linkerd Authorization Policy Example
+# Ensures that only specific services can talk to the Postgres Database
+apiVersion: policy.linkerd.io/v1beta1
+kind: Server
+metadata:
+  name: postgres-server
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  port: 5432
+  proxyProtocol: opaque

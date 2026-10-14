@@ -1,0 +1,142 @@
+---
+# Main API (Golang)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main-api
+  template:
+    metadata:
+      labels:
+        app: main-api
+    spec:
+      containers:
+      - name: main-api
+        image: sheetmetal-main-api:latest
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: sheetmetal-config
+        - secretRef:
+            name: sheetmetal-secrets
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-api
+spec:
+  selector:
+    app: main-api
+  ports:
+  - port: 3000
+    targetPort: 3000
+
+---
+# Geometry Engine (Rust)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geometry-engine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: geometry-engine
+  template:
+    metadata:
+      labels:
+        app: geometry-engine
+    spec:
+      containers:
+      - name: geometry-engine
+        image: sheetmetal-geometry-engine:latest
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: sheetmetal-config
+        - secretRef:
+            name: sheetmetal-secrets
+        resources:
+          requests:
+            cpu: 500m
+            memory: 256Mi
+          limits:
+            cpu: 2000m # 2 Cores limit for heavy CAD processing
+            memory: 2Gi
+---
+# Frontend (Vue 3 / Nginx)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: sheetmetal-frontend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: frontend
+  ports:
+  - port: 80
+    targetPort: 80

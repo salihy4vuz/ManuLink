@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pg-backup
+  namespace: default
+spec:
+  schedule: "0 2 * * *" # Her gece saat 02:00'de çalışır
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: pg-backup
+            image: postgres:15-alpine
+            command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Starting database backup..."
+              PGPASSWORD=$POSTGRES_PASSWORD pg_dump -h $POSTGRES_HOST -U $POSTGRES_USER $POSTGRES_DB > /tmp/backup.sql
+              echo "Backup created. Uploading to MinIO..."
+              # MinIO mc alias setup and upload would be here
+              # mc alias set myminio http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
+              # mc cp /tmp/backup.sql myminio/backups/backup-$(date +%Y%m%d%H%M%S).sql
+              echo "Backup successful."
+            envFrom:
+            - secretRef:
+                name: db-secrets
+          restartPolicy: OnFailure

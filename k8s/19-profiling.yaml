@@ -1,0 +1,36 @@
+---
+# Faz 5.8.2: Continuous Profiling (Pyroscope)
+# A deployment for the Pyroscope server to collect CPU/Memory profiles continuously.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pyroscope
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pyroscope
+  template:
+    metadata:
+      labels:
+        app: pyroscope
+    spec:
+      containers:
+      - name: pyroscope
+        image: grafana/pyroscope:latest
+        ports:
+        - containerPort: 4040
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pyroscope
+  namespace: default
+spec:
+  ports:
+  - port: 4040
+    targetPort: 4040
+  selector:
+    app: pyroscope

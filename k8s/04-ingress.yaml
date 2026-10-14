@@ -1,0 +1,65 @@
+---
+# Traefik Ingress Route for K3s
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sheetmetal-ingress
+  namespace: default
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    # To enable automatic Let's Encrypt SSL, uncomment the lines below:
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  tls:
+  - hosts:
+    - localhost # Replace with your production domain (e.g., app.sheetmetal.com)
+    # secretName: sheetmetal-tls-secret # Uncomment for Cert-Manager to auto-generate the cert
+  rules:
+  - host: "localhost" # Veya prod domaininiz (örn. app.sheetmetal.com)
+    http:
+      paths:
+      # API Route -> Golang
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: main-api
+            port:
+              number: 3000
+              
+      # WebSocket Route -> Golang
+      - path: /ws
+        pathType: Prefix
+        backend:
+          service:
+            name: main-api
+            port:
+              number: 3000
+              
+      # MinIO Proxy Route
+      - path: /s3
+        pathType: Prefix
+        backend:
+          service:
+            name: minio
+            port:
+              number: 9000
+
+      # Grafana Monitoring Route
+      - path: /grafana
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 3000
+
+      # Default Route (Catch-all) -> Vue Frontend
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80

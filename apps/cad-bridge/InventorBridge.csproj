@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SheetMetalApex.Bridge.Inventor</RootNamespace>
+    <AssemblyName>InventorAddin</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Inventor.Interop">
+      <HintPath>C:\Program Files\Autodesk\Inventor 2026\Bin\Public Assemblies\autodesk.inventor.interop.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <!-- Assuming a basic WebSocket package is available or implemented -->
+  </ItemGroup>
+</Project>

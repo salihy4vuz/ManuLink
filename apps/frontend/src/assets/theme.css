@@ -1,0 +1,30 @@
+/* Theme CSS Variables that can be overridden by JS */
+:root {
+  --color-primary: #3498db;
+  --color-secondary: #2c3e50;
+  --color-background: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-text: #333333;
+  --color-text-inverse: #ffffff;
+  --border-radius: 8px;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Helper utility classes for the theme */
+.bg-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}

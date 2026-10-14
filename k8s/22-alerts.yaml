@@ -1,0 +1,50 @@
+---
+# Faz 5.8.5: Advanced Alerting (Prometheus Alertmanager rules)
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cam-engine-alerts
+  namespace: default
+  labels:
+    prometheus: k8s
+spec:
+  groups:
+  - name: cam-engine.rules
+    rules:
+    - alert: CamEngineHighLatency
+      expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{job="geometry-engine"}[5m])) > 5
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "CAM Engine High Latency"
+        description: "99th percentile of CAM engine requests taking longer than 5s."
+    - alert: APIErrorRateHigh
+      expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) > 0.05
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "API Error Rate > 5% → PagerDuty"
+    - alert: ERPQueueDepthHigh
+      expr: rabbitmq_queue_messages{queue="erp_sync"} > 100
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "ERP Queue Depth > 100 → Slack"
+    - alert: RedisMemoryHigh
+      expr: (redis_memory_used_bytes / redis_memory_max_bytes) > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Redis Memory > 80% → Email"
+    - alert: PostgresConnectionsHigh
+      expr: (pg_stat_activity_count / pg_settings_max_connections) > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "PostgreSQL Connections > 80% max → Slack"

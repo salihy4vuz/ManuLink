@@ -1,0 +1,72 @@
+---
+# Loki Deployment (Log Storage & Query Engine)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loki
+  template:
+    metadata:
+      labels:
+        app: loki
+    spec:
+      containers:
+      - name: loki
+        image: grafana/loki:latest
+        ports:
+        - containerPort: 3100
+        # In production, mount a PersistentVolume here for log retention
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+  namespace: default
+spec:
+  selector:
+    app: loki
+  ports:
+  - port: 3100
+    targetPort: 3100
+
+---
+# Promtail DaemonSet (Log Forwarder)
+# Runs on every K3s node to collect stdout/stderr from containers and send them to Loki
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: promtail
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: promtail
+  template:
+    metadata:
+      labels:
+        app: promtail
+    spec:
+      containers:
+      - name: promtail
+        image: grafana/promtail:latest
+        args:
+        - -config.file=/etc/promtail/promtail.yaml
+        - -client.url=http://loki:3100/loki/api/v1/push
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/log/pods # K3s stores container logs here
+          readOnly: true
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/log/pods

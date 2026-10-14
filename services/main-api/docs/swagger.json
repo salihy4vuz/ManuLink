@@ -1,0 +1,50 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "SheetMetal Apex B2B API",
+        "description": "Industrial API for automated sheet metal quotations, ticket management, and CRM integration.",
+        "version": "1.4.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Local Gateway"
+        }
+    ],
+    "paths": {
+        "/api/quote": {
+            "post": {
+                "summary": "Generate a quote for a sheet metal part",
+                "tags": ["Pricing"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "material": { "type": "string", "example": "steel" },
+                                    "thickness": { "type": "number", "example": 2.0 },
+                                    "quantity": { "type": "integer", "example": 100 }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": { "description": "Quote generated successfully" },
+                    "429": { "description": "Rate limit exceeded" }
+                }
+            }
+        },
+        "/api/tickets": {
+            "get": {
+                "summary": "Get all tickets for the user",
+                "tags": ["Support"],
+                "responses": {
+                    "200": { "description": "Returns array of tickets" }
+                }
+            }
+        }
+    }
+}

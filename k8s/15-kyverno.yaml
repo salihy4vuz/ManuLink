@@ -1,0 +1,26 @@
+---
+# Faz 5.7.7: Kyverno Policy (Cluster Security)
+# Disallow root user in containers
+
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-root-user
+spec:
+  validationFailureAction: enforce
+  rules:
+  - name: validate-runAsNonRoot
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    validate:
+      message: "Running as root is not allowed. Set runAsNonRoot to true."
+      pattern:
+        spec:
+          securityContext:
+            runAsNonRoot: true
+          containers:
+          - =(securityContext):
+              =(runAsNonRoot): true

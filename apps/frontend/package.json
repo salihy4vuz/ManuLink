@@ -1,0 +1,30 @@
+{
+  "name": "sheetmetal-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@tresjs/cientos": "^3.9.0",
+    "@tresjs/core": "^3.7.0",
+    "axios": "^1.7.3",
+    "lucide-vue-next": "^1.0.0",
+    "pinia": "^2.1.7",
+    "three": "^0.162.0",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.1",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
+    "vite": "^5.1.4"
+  }
+}

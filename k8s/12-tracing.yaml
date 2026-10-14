@@ -1,0 +1,61 @@
+---
+# Faz 5.7.4: Distributed Tracing (Tempo & OpenTelemetry)
+# OpenTelemetry Collector Configuration to receive traces from Golang and Rust
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-conf
+  namespace: default
+  labels:
+    app: opentelemetry
+data:
+  otel-collector-config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+    exporters:
+      otlp:
+        endpoint: "tempo:4317" # Send traces to Tempo
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [otlp]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opentelemetry
+  template:
+    metadata:
+      labels:
+        app: opentelemetry
+    spec:
+      containers:
+      - name: otel-collector
+        image: otel/opentelemetry-collector:latest
+        command:
+        - "/otelcol"
+        - "--config=/conf/otel-collector-config.yaml"
+        volumeMounts:
+        - name: otel-collector-config-vol
+          mountPath: /conf
+      volumes:
+      - name: otel-collector-config-vol
+        configMap:
+          name: otel-collector-conf
+          items:
+            - key: otel-collector-config
+              path: otel-collector-config.yaml

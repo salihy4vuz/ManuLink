@@ -1,0 +1,17 @@
+---
+# Faz 5.7.6: Velero Backup & Disaster Recovery Schedule
+# Requires Velero to be installed in the cluster. This schedules a daily backup of the entire default namespace.
+
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: daily-backup
+  namespace: velero
+spec:
+  schedule: "0 2 * * *" # Every day at 2 AM
+  template:
+    includedNamespaces:
+    - default
+    includeClusterResources: true
+    snapshotVolumes: true
+    ttl: 720h0m0s # 30 days retention

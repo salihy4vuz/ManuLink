@@ -1,0 +1,34 @@
+---
+# Faz 5.9.5: K8s Gateway API (Modern Ingress)
+# Replaces Ingress with more advanced routing capabilities
+
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: sacmetal-gateway
+  namespace: default
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: main-api-route
+  namespace: default
+spec:
+  parentRefs:
+  - name: sacmetal-gateway
+  hostnames:
+  - "api.sacmetal-automation.local"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: main-api
+      port: 3000

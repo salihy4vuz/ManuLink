@@ -1,0 +1,29 @@
+openapi: 3.0.0
+info:
+  title: Sheet Metal Automat-On API
+  version: 1.0.0
+paths:
+  /api/v1/auth/login:
+    post:
+      summary: Login
+      responses:
+        '200':
+          description: Successful response
+  /api/v1/quote/calculate:
+    post:
+      summary: Calculate Quote
+      responses:
+        '200':
+          description: Returns calculated price
+  /api/v1/cad/upload:
+    post:
+      summary: Upload CAD File
+      responses:
+        '200':
+          description: Success
+  /api/v1/erp/sync:
+    post:
+      summary: Trigger ERP Sync
+      responses:
+        '202':
+          description: Accepted

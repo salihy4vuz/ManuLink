@@ -1,0 +1,63 @@
+/* Minimal Premium CSS */
+:root {
+  --bg-color: #f8fafc;
+  --glass-bg: #ffffff;
+  --primary: #1d6bf3;
+  --text-main: #0f172a;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+}
+
+.app-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background: var(--glass-bg);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.brand {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 2rem;
+}
+
+.sidebar a {
+  color: var(--text-main);
+  text-decoration: none;
+  opacity: 0.7;
+}
+.sidebar a.router-link-active {
+  opacity: 1;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.content-area {
+  flex: 1;
+  padding: 3rem;
+  overflow-y: auto;
+}
+
+.logout-btn {
+  margin-top: auto;
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+}

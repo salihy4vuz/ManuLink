@@ -1,0 +1,27 @@
+# Faz 5.9.3: Skaffold Dev Environment Configuration
+# Put this in the project root as skaffold.yaml for local development
+
+apiVersion: skaffold/v4beta7
+kind: Config
+metadata:
+  name: sacmetal-automation
+build:
+  artifacts:
+  - image: sacmetal-main-api
+    context: ./services/main-api
+    docker:
+      dockerfile: Dockerfile
+  - image: sacmetal-geometry-engine
+    context: ./services/geometry-engine
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - ./k8s/03-apps.yaml
+    - ./k8s/04-ingress.yaml
+portForward:
+  - resourceType: service
+    resourceName: main-api
+    port: 3000
+    localPort: 3000

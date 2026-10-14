@@ -1,0 +1,33 @@
+---
+# Faz 5.8.9: Canary Deployments (Argo Rollouts)
+# Example Rollout definition for Geometry Engine to gradually shift traffic.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: geometry-engine-rollout
+  namespace: default
+spec:
+  replicas: 5
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: geometry-engine
+  template:
+    metadata:
+      labels:
+        app: geometry-engine
+    spec:
+      containers:
+      - name: geometry-engine
+        image: your-registry/geometry-engine:v2.0.0
+        ports:
+        - containerPort: 8080
+  strategy:
+    canary:
+      # Send 20% of traffic to the new version, wait for manual promotion, then 50%, wait 10m, then 100%
+      steps:
+      - setWeight: 20
+      - pause: {} # Wait indefinitely until manually promoted via Argo CLI or UI
+      - setWeight: 50
+      - pause: {duration: 10m}

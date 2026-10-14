@@ -1,0 +1,21 @@
+---
+# Faz 5.7.2: KEDA Event-Driven Autoscaling (RabbitMQ based)
+# Requires KEDA to be installed in the cluster
+
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: rust-engine-scaler
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: geometry-engine-deployment
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+  - type: rabbitmq
+    metadata:
+      queueName: cam_tasks
+      queueLength: "5" # Scale up if more than 5 messages are in queue
+      # The host points to a TriggerAuthentication resource (or connection string in env)
+      hostFromEnv: RABBITMQ_URL

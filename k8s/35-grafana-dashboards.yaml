@@ -1,0 +1,58 @@
+---
+# Faz 5.9.9: Observability Dashboards (Grafana as Code)
+# Automatically injects a dashboard into Grafana using the sidecar pattern
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-cam-metrics
+  namespace: default
+  labels:
+    grafana_dashboard: "1" # Grafana sidecar looks for this label
+data:
+  cam-metrics.json: |-
+    {
+      "title": "CAM Engine Metrics",
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Aktif Tenant Sayısı",
+          "targets": [{ "expr": "sum(active_tenants)" }]
+        },
+        {
+          "type": "timeseries",
+          "title": "Günlük Teklif Sayısı",
+          "targets": [{ "expr": "increase(quotes_total[1d])" }]
+        },
+        {
+          "type": "histogram",
+          "title": "API Response Time p95",
+          "targets": [{ "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))" }]
+        },
+        {
+          "type": "stat",
+          "title": "RabbitMQ ERP Queue Depth",
+          "targets": [{ "expr": "rabbitmq_queue_messages{queue=\"erp_sync\"}" }]
+        },
+        {
+          "type": "stat",
+          "title": "Redis Hit Rate",
+          "targets": [{ "expr": "rate(redis_keyspace_hits_total[5m]) / (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m]))" }]
+        },
+        {
+          "type": "stat",
+          "title": "PostgreSQL Connection Pool",
+          "targets": [{ "expr": "pg_stat_activity_count" }]
+        },
+        {
+          "type": "timeseries",
+          "title": "Rust Engine Hesaplama Süresi",
+          "targets": [{ "expr": "rate(http_request_duration_seconds_sum{job=\"geometry-engine\"}[5m]) / rate(http_request_duration_seconds_count{job=\"geometry-engine\"}[5m])" }]
+        },
+        {
+          "type": "stat",
+          "title": "CAD Yükleme Başarı Oranı",
+          "targets": [{ "expr": "sum(rate(cad_upload_success[5m])) / sum(rate(cad_upload_total[5m]))" }]
+        }
+      ]
+    }
